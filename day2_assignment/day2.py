@@ -1,6 +1,3 @@
-"""
-file_operations.py - Solutions for file operations questions
-"""
 import os
 import glob
 
@@ -31,8 +28,7 @@ def collect_filtered_files(directory, extension, output_file):
                     with open(file_path, "rt") as f_in:
                         lines = f_in.readlines()
                         f_out.writelines(lines)
-
-# Directory to search
+                        
 path = "."
 
 # Question-3: Find largest file

@@ -17,3 +17,4 @@ d_merge = d1.copy()
 for key, val in d2.items():
     d_merge[key] = d_merge.get(key, 0) + val
 print(f"D_MERGE = {d_merge}")
+print(f"D_MERGE = {d_merge}")

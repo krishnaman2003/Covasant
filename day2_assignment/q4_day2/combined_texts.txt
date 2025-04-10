@@ -1,0 +1,4 @@
+----- Start of .\combined_texts.txt -----
+
+----- End of .\combined_texts.txt -----
+

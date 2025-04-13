@@ -1,3 +1,9 @@
+"""
+Question-8:
+Given a URL, download that and parse and download all links inside that page in thread 
+- use concurrent, Concurrent Programming, decorators, Iterators, ThreadPoolExecutor, BeautifulSoup for parsing html, requests for downloading.
+"""
+
 import threading, time, requests, os, concurrent.futures
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
@@ -44,9 +50,11 @@ class UrlDownloader:
                 return response.text
         except Exception as e:
             print(f"Error {url}: {e}")
+            
     def get_links(self, html):
         soup = BeautifulSoup(html, "html.parser")
         return [urljoin(self.url, a["href"]) for a in soup.find_all("a", href=True) if a["href"].startswith("http")]
+        
     @profile
     def process(self, max_threads=4, max_links=10):
         html = self.download(self.url)

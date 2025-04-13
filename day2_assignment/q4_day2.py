@@ -1,13 +1,13 @@
 import os
 
-def dump_text_files(source_dir, output_file):
-    with open(output_file, "wt", encoding="utf-8") as outfile:
-        for root, _, files in os.walk(source_dir):
+def dump_files(given_dir, output_file):
+    with open(output_file, "wt") as outfile:
+        for root, _, files in os.walk(given_dir):
             for file in files:
                 if file.lower().endswith(".txt"):
                     file_path = os.path.join(root, file)
                     try:
-                        with open(file_path, "rt", encoding="utf-8") as infile:
+                        with open(file_path, "rt") as infile:
                             contents = infile.read()
                         outfile.write(f"----- Start of {file_path} -----\n")
                         outfile.write(contents)
@@ -16,7 +16,7 @@ def dump_text_files(source_dir, output_file):
                         pass
 
 if __name__ == "__main__":
-    source_dir = r"."
+    given_dir = r"C:\Users\Krishna Raj\Downloads\handson\handson"
     output_file = "combined_texts.txt"
-    dump_text_files(source_dir, output_file)
-    print(f"All text files from {source_dir} have been dumped into {output_file}")
+    dump_files(given_dir, output_file)
+    print(f"All files from {given_dir} have been dumped into {output_file}")

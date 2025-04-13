@@ -1,3 +1,17 @@
+"""
+Question-2: 
+Given:D1 = {'ok': 1, 'nok': 2}
+D2 = {'ok': 2, 'new':3 }
+Create below:
+# union of keys, #value does not matter
+D_UNION = { 'ok': 1, 'nok': 2 , 'new':3  } 
+# intersection of keys, #value does not matter
+D_INTERSECTION = {'ok': 1}
+D1- D2 = {'nok': 2 }
+#values are added for same keys
+D_MERGE = { 'ok': 3, 'nok': 2 , 'new':3  }
+"""
+
 d1 = {'ok': 1, 'nok': 2}
 d2 = {'ok': 2, 'new': 3}
 

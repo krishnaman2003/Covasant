@@ -3,7 +3,6 @@ def convert(x):
         return [convert(element) for element in x]
     elif isinstance(x, str):
         string_list = x.strip('()').split(',')
-        # Convert the list of strings to a list of integers
         return [int(s) for s in string_list]
     else:
         return x

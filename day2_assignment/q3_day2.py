@@ -1,5 +1,8 @@
+"""
+Question-3:
+Given a directory, find out the file Name having max size recursively 
+"""
 import os
-
 def find_largest_file(directory):
     max_size = 0
     max_file = None

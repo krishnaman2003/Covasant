@@ -1,5 +1,10 @@
-import os
+"""
+Question-4:
+Recursively go below a dir and based on filter, dump those files in to  single file 
+(work with only text file)
+"""
 
+import os
 def dump_files(given_dir, output_file):
     with open(output_file, "wt") as outfile:
         for root, _, files in os.walk(given_dir):
@@ -9,7 +14,7 @@ def dump_files(given_dir, output_file):
                     try:
                         with open(file_path, "rt") as infile:
                             contents = infile.read()
-                        outfile.write(f"----- Start of {file_path} -----\n")
+                        outfile.write(f" Start of {file_path} \n")
                         outfile.write(contents)
                         outfile.write(f"\n----- End of {file_path} -----\n\n")
                     except Exception as e:

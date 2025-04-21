@@ -1,3 +1,8 @@
+"""
+Question-18:
+convert helloj of flask to fastapi
+"""
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from sqlalchemy import create_engine, text

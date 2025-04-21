@@ -23,7 +23,7 @@ def get_age_from_db(name: str):
                                   dict(name=name)).fetchone()
     except Exception as e:
         print(f"Database error: {e}")
-        raise HTTPException(status_code=500, detail="Database error occurred")
+        raise HTTPException(status_code=500, detail="Database error")
     if result:
         return result[0]
     else:
@@ -34,12 +34,12 @@ class HelloData(BaseModel):
     format: str = "json"
 
 @app.get("/helloj/{name}/{format}")
-def read_hello_path(name: str, format: str = "json"):
+def hello_path(name: str, format: str = "json"):
     age = get_age_from_db(name)
     return {"name": name, "age": age, "source": "path", "format_requested": format}
 
 @app.get("/helloj")
-def read_hello_query(name: str = "abc", format: str = "json"):
+def hello_query(name: str = "abc", format: str = "json"):
     age = get_age_from_db(name)
     return {"name": name, "age": age, "source": "query", "format_requested": format}
 

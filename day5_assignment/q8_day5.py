@@ -7,7 +7,7 @@ Given a URL, download that and parse and download all links inside that page in 
 import requests
 import os
 from bs4 import BeautifulSoup
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import urljoin, urlparse
 import time
 
@@ -33,8 +33,10 @@ def download_link(url, download_folder):
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
         print(f"Downloaded: {url}")
+        return True  # Return success indicator
     except Exception as e:
         print(f"Failed {url}: {e}")
+        return False  # Return failure indicator
 
 @profile
 def download_all_links(start_url, download_folder="downloads", max_workers=5):
@@ -49,9 +51,25 @@ def download_all_links(start_url, download_folder="downloads", max_workers=5):
             if absolute_url.startswith(('http://', 'https://')):
                 links_to_download.add(absolute_url)
         print(f"Found {len(links_to_download)} links. Starting download...")
+        
+        # Fix: Properly wait for all futures to complete and handle results
+        successful_downloads = 0
+        failed_downloads = 0
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = [executor.submit(download_link, url, download_folder) for url in links_to_download]
-        print("Finished downloading.")
+            futures = {executor.submit(download_link, url, download_folder): url for url in links_to_download}
+            for future in as_completed(futures):
+                url = futures[future]
+                try:
+                    result = future.result()  # This will raise any exception that occurred
+                    if result:
+                        successful_downloads += 1
+                    else:
+                        failed_downloads += 1
+                except Exception as e:
+                    print(f"Exception occurred for {url}: {e}")
+                    failed_downloads += 1
+        
+        print(f"Finished downloading. Success: {successful_downloads}, Failed: {failed_downloads}")
     except Exception as e:
         print(f"An error occurred: {e}")
 

@@ -6,7 +6,7 @@ Sharing of content
 @app.route("/clearnotepadtxt", methods=['GET'])#http://localhost:5000/clearnotepadtxt
 """
 
-from flask import Flask, request
+from flask import Flask, request, escape
 import os
 
 app = Flask(__name__)
@@ -16,16 +16,23 @@ NOTEPAD_FILE = os.path.join(app.root_path, "notepad.txt")
 def update_notepad():
     if request.method == 'POST':
         content = request.form.get('content', '')
-        with open(NOTEPAD_FILE, 'w') as f:
-            f.write(content)
-        return "Notepad updated. <a href='/share'>View Notepad</a>"
+        # Fix: Add basic validation to prevent extremely large files
+        if len(content) > 100000:  # 100KB limit
+            return "Error: Content too large. Maximum 100KB allowed. <a href='/updatefortoday'>Try again</a>"
+        
+        try:
+            with open(NOTEPAD_FILE, 'w', encoding='utf-8') as f:
+                f.write(content)
+            return "Notepad updated. <a href='/share'>View Notepad</a>"
+        except IOError as e:
+            return f"Error writing to file: {escape(str(e))}. <a href='/updatefortoday'>Try again</a>"
     else:
         return """
         <html><head><title>Update Notepad</title></head>
         <body>
             <h2>Update Today's Notepad</h2>
             <form method="post">
-                <textarea name="content" rows="10" cols="50"></textarea><br><br>
+                <textarea name="content" rows="10" cols="50" maxlength="100000"></textarea><br><br>
                 <input type="submit" value="Update Notepad">
             </form>
         </body></html>
@@ -35,12 +42,17 @@ def update_notepad():
 def share_notepad():
     content = "Notepad is empty or file not found."
     if os.path.exists(NOTEPAD_FILE):
-         with open(NOTEPAD_FILE, 'r') as f:
-            file_content = f.read()
-            if file_content.strip():
-                 content = file_content
-            else:
-                 content = "Notepad is currently empty."
+        try:
+            with open(NOTEPAD_FILE, 'r', encoding='utf-8') as f:
+                file_content = f.read()
+                if file_content.strip():
+                    # Fix: Escape HTML content to prevent XSS attacks
+                    content = escape(file_content)
+                else:
+                    content = "Notepad is currently empty."
+        except IOError as e:
+            content = f"Error reading file: {escape(str(e))}"
+    
     return f"""
     <html><head><title>Shared Notepad</title></head>
     <body>
@@ -55,9 +67,12 @@ def share_notepad():
 
 @app.route("/clearnotepadtxt", methods=['GET'])
 def clear_notepad():
-    with open(NOTEPAD_FILE, 'w') as f:
-        pass 
-    return "Notepad cleared. <a href='/share'>View Notepad</a>"
+    try:
+        with open(NOTEPAD_FILE, 'w', encoding='utf-8') as f:
+            pass 
+        return "Notepad cleared. <a href='/share'>View Notepad</a>"
+    except IOError as e:
+        return f"Error clearing file: {escape(str(e))}. <a href='/share'>View Notepad</a>"
 
 if __name__ == '__main__':
     app.run()

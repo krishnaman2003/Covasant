@@ -25,12 +25,19 @@ def get_weather(city):
     forecast_list = []
     for i in range(5):
         day_temp = random.randint(current_temp - 15, current_temp + 15)
+        # Fix: Ensure high is always >= low for realistic weather data
+        high_temp = max(day_temp, current_temp + random.randint(-5, 10))
+        low_temp = min(day_temp, current_temp - random.randint(0, 10))
+        # Additional fix: Ensure high >= low in all cases
+        if low_temp > high_temp:
+            high_temp, low_temp = low_temp, high_temp
+        
         forecast_list.append({
             "code": str(random.randint(20, 35)),
             "date": f"{(20+i):02d} Apr 2025", 
             "day": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][i % 7],
-            "high": str(max(day_temp, current_temp + random.randint(-5, 10))),
-            "low": str(min(day_temp, current_temp - random.randint(0, 10))),
+            "high": str(high_temp),
+            "low": str(low_temp),
             "text": random.choice(["Clear", "Mostly Sunny", "Partly Cloudy", "Breezy", "Cloudy"])
         })
     weather_data = {
